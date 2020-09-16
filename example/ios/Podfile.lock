@@ -1,30 +1,34 @@
 PODS:
+  - CustomBaseUrlOneSignal (2.15.3)
   - Flutter (1.0.0)
-  - OneSignal (2.10.0)
-  - onesignal_flutter (2.0.0):
+  - onesignal_flutter (2.6.1):
+    - CustomBaseUrlOneSignal (= 2.15.3)
     - Flutter
-    - OneSignal (< 3.0, >= 2.9.5)
 
 DEPENDENCIES:
+  - CustomBaseUrlOneSignal (from `https://github.com/luis901101/OneSignal-iOS-SDK-Clone.git`, tag `2.15.3`)
   - Flutter (from `.symlinks/flutter/ios`)
-  - OneSignal (< 3.0, >= 2.9.4)
   - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
 
-SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
-    - OneSignal
-
 EXTERNAL SOURCES:
+  CustomBaseUrlOneSignal:
+    :git: https://github.com/luis901101/OneSignal-iOS-SDK-Clone.git
+    :tag: 2.15.3
   Flutter:
     :path: ".symlinks/flutter/ios"
   onesignal_flutter:
     :path: ".symlinks/plugins/onesignal_flutter/ios"
 
+CHECKOUT OPTIONS:
+  CustomBaseUrlOneSignal:
+    :git: https://github.com/luis901101/OneSignal-iOS-SDK-Clone.git
+    :tag: 2.15.3
+
 SPEC CHECKSUMS:
-  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
-  OneSignal: 0f5ff711d9f25da54885e4ab06ef0abc221a46ef
-  onesignal_flutter: 9f295af4ef4a987342bb374c5988392e076ccafd
+  CustomBaseUrlOneSignal: 86a070fd23c91a089d002f112d509250ff958479
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  onesignal_flutter: 57618d382ddcc1980d6c2271a305ccdcb30fdf6b
 
-PODFILE CHECKSUM: 9ef7a252697efd34b66667034535923c4615900c
+PODFILE CHECKSUM: 9eac8b117c9ef5a40f533ab6e602a25230468da2
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.9.3

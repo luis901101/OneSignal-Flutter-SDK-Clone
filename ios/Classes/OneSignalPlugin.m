@@ -151,11 +151,11 @@
 }
 
 - (void)initOneSignal:(FlutterMethodCall *)call withResult:(FlutterResult)result {
-     [OneSignal setInAppMessageClickHandler:^(OSInAppMessageAction *action) {
+    [OneSignal setInAppMessageClickHandler:^(OSInAppMessageAction *action) {
          [self handleInAppMessageClicked:action];
      }];
 
-    [OneSignal initWithLaunchOptions:nil appId:call.arguments[@"appId"] handleNotificationReceived:^(OSNotification *notification) {
+    [OneSignal initWithLaunchOptions:nil appId:call.arguments[@"appId"] baseUrl:call.arguments[@"baseUrl"] handleNotificationReceived:^(OSNotification *notification) {
         [self handleReceivedNotification:notification];
     } handleNotificationAction:^(OSNotificationOpenedResult *result) {
         [self handleNotificationOpened:result];

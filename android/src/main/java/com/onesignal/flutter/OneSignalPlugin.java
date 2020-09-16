@@ -133,13 +133,14 @@ public class OneSignalPlugin
 
   private void initOneSignal(MethodCall call, Result reply) {
     String appId = call.argument("appId");
+    String baseUrl = call.argument("baseUrl");
     Context context = flutterRegistrar.activeContext();
 
     OneSignal.Builder builder = OneSignal.getCurrentOrNewInitBuilder();
     builder.unsubscribeWhenNotificationsAreDisabled(true);
     builder.filterOtherGCMReceivers(true);
     builder.setInAppMessageClickHandler(this);
-    OneSignal.init(context, null, appId, this, this);
+    OneSignal.init(context, null, appId, baseUrl, this, this);
 
     if (hasSetRequiresPrivacyConsent)
       this.waitingForUserPrivacyConsent = true;

@@ -78,7 +78,11 @@ class _MyAppState extends State<MyApp> {
 
     // NOTE: Replace with your own app ID from https://www.onesignal.com
     await OneSignal.shared
-        .init("b2f7f966-d8cc-11e4-bed1-df8f05be55ba", iOSSettings: settings);
+      .init(
+        "b2f7f966-d8cc-11e4-bed1-df8f05be55ba",
+        baseUrl: "https://onesignal-proxy.labs.iguanait.com/",
+        iOSSettings: settings,
+    );
 
     OneSignal.shared
         .setInFocusDisplayType(OSNotificationDisplayType.notification);

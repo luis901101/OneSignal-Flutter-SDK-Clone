@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:3.5.3'
     }
 }
 
@@ -34,7 +34,9 @@ android {
 }
 
 dependencies {
-    api 'com.onesignal:OneSignal:3.15.3'
+//    api 'com.onesignal:OneSignal:3.15.3'
+//    api 'com.github.luis901101:OneSignal-Android-SDK:3.15.3'
+    api 'com.github.luis901101:OneSignal-Android-SDK:custom-base-url-SNAPSHOT'
 }
 
 // Adds required manifestPlaceholders keys to allow mainifest merge gradle step to complete
