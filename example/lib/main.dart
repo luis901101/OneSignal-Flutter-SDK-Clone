@@ -269,7 +269,7 @@ class _MyAppState extends State<MyApp> {
     print("'trigger_3' key trigger value: " + triggerValue);
 
     // Create a list and bulk remove triggers based on keys supplied
-    List<String> keys = new List<String>();
+    List<String> keys = [];
     keys.add("trigger_1");
     keys.add("trigger_3");
     OneSignal.shared.removeTriggersForKeys(keys);
@@ -446,12 +446,15 @@ class OneSignalButtonState extends State<OneSignalButton> {
     return new Table(
       children: [
         new TableRow(children: [
-          new FlatButton(
-            disabledColor: Color.fromARGB(180, 212, 86, 83),
-            disabledTextColor: Colors.white,
-            color: Color.fromARGB(255, 212, 86, 83),
-            textColor: Colors.white,
-            padding: EdgeInsets.all(8.0),
+          new TextButton(
+            // disabledColor: Color.fromARGB(180, 212, 86, 83),
+            // disabledTextColor: Colors.white,
+            // color: Color.fromARGB(255, 212, 86, 83),
+            // textColor: Colors.white,
+            style: ButtonStyle(
+              foregroundColor: MaterialStateProperty.all(Color.fromARGB(255, 212, 86, 83)),
+              padding: MaterialStateProperty.all(EdgeInsets.all(8.0)),
+            ),
             child: new Text(widget.title),
             onPressed: widget.enabled ? widget.onPressed : null,
           )
