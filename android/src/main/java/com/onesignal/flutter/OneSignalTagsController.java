@@ -1,11 +1,10 @@
 package com.onesignal.flutter;
 
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import com.onesignal.OneSignal;
 import com.onesignal.OneSignal.GetTagsHandler;
@@ -31,8 +30,8 @@ class OSFlutterChangeTagsHandler extends FlutterRegistrarResponder implements Ch
     // this property guarantees the callback will never be called more than once.
     private AtomicBoolean replySubmitted = new AtomicBoolean(false);
 
-    OSFlutterChangeTagsHandler(PluginRegistry.Registrar flutterRegistrar, MethodChannel channel, Result res) {
-        this.flutterRegistrar = flutterRegistrar;
+    OSFlutterChangeTagsHandler(BinaryMessenger messenger, MethodChannel channel, Result res) {
+        this.messenger = messenger;
         this.channel = channel;
         this.result = res;
     }
@@ -72,14 +71,12 @@ class OSFlutterChangeTagsHandler extends FlutterRegistrarResponder implements Ch
 
 public class OneSignalTagsController extends FlutterRegistrarResponder implements MethodCallHandler {
     private MethodChannel channel;
-    private Registrar registrar;
 
-    static void registerWith(Registrar registrar) {
+    static void registerWith(BinaryMessenger messenger) {
         OneSignalTagsController controller = new OneSignalTagsController();
-        controller.registrar = registrar;
-        controller.channel = new MethodChannel(registrar.messenger(), "OneSignal#tags");
+        controller.messenger = messenger;
+        controller.channel = new MethodChannel(messenger, "OneSignal#tags");
         controller.channel.setMethodCallHandler(controller);
-        controller.flutterRegistrar = registrar;
     }
 
     @Override
@@ -95,14 +92,14 @@ public class OneSignalTagsController extends FlutterRegistrarResponder implement
     }
 
     private void getTags(MethodCall call, Result result) {
-        OneSignal.getTags(new OSFlutterChangeTagsHandler(registrar, channel, result));
+        OneSignal.getTags(new OSFlutterChangeTagsHandler(messenger, channel, result));
     }
 
     private void sendTags(MethodCall call, Result result) {
         // call.arguments is being casted to a Map<String, Object> so a try-catch with
         //  a ClassCastException will be thrown
         try {
-            OneSignal.sendTags(new JSONObject((Map<String, Object>) call.arguments), new OSFlutterChangeTagsHandler(registrar, channel, result));
+            OneSignal.sendTags(new JSONObject((Map<String, Object>) call.arguments), new OSFlutterChangeTagsHandler(messenger, channel, result));
         } catch(ClassCastException e) {
             replyError(result, "OneSignal", "sendTags failed with error: " + e.getMessage() + "\n" + e.getStackTrace(), null);
         }
@@ -112,7 +109,7 @@ public class OneSignalTagsController extends FlutterRegistrarResponder implement
         // call.arguments is being casted to a List<String> so a try-catch with
         //  a ClassCastException will be thrown
         try {
-            OneSignal.deleteTags((List<String>) call.arguments, new OSFlutterChangeTagsHandler(registrar, channel, result));
+            OneSignal.deleteTags((List<String>) call.arguments, new OSFlutterChangeTagsHandler(messenger, channel, result));
         } catch(ClassCastException e) {
             replyError(result, "OneSignal", "deleteTags failed with error: " + e.getMessage() + "\n" + e.getStackTrace(), null);
         }

@@ -1,6 +1,8 @@
 package com.onesignal.flutter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.IntentFilter;
 
 import com.onesignal.OSEmailSubscriptionObserver;
 import com.onesignal.OSEmailSubscriptionStateChanges;
@@ -26,6 +28,9 @@ import org.json.JSONObject;
 import java.util.Collection;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -37,13 +42,15 @@ import io.flutter.view.FlutterNativeView;
 /** OnesignalPlugin */
 public class OneSignalPlugin
    extends FlutterRegistrarResponder
-   implements MethodCallHandler,
-   NotificationReceivedHandler,
-   NotificationOpenedHandler,
-   InAppMessageClickHandler,
-   OSSubscriptionObserver,
-   OSEmailSubscriptionObserver,
-   OSPermissionObserver {
+   implements
+    FlutterPlugin,
+    MethodCallHandler,
+    NotificationReceivedHandler,
+    NotificationOpenedHandler,
+    InAppMessageClickHandler,
+    OSSubscriptionObserver,
+    OSEmailSubscriptionObserver,
+    OSPermissionObserver {
 
   /** Plugin registration. */
   private OSNotificationOpenResult coldStartNotificationResult;
@@ -53,31 +60,60 @@ public class OneSignalPlugin
   private boolean hasSetRequiresPrivacyConsent = false;
   private boolean waitingForUserPrivacyConsent = false;
 
-  public static void registerWith(Registrar registrar) {
+  public OneSignalPlugin() {
+  }
+
+  private void init(Context context, BinaryMessenger messenger)
+  {
+    this.context = context;
+    this.messenger = messenger;
+
     OneSignal.sdkType = "flutter";
 
-    OneSignalPlugin plugin = new OneSignalPlugin();
+    waitingForUserPrivacyConsent = false;
+    channel = new MethodChannel(messenger, "OneSignal");
+    channel.setMethodCallHandler(this);
 
-    plugin.waitingForUserPrivacyConsent = false;
-    plugin.channel = new MethodChannel(registrar.messenger(), "OneSignal");
-    plugin.channel.setMethodCallHandler(plugin);
-    plugin.flutterRegistrar = registrar;
+    OneSignalTagsController.registerWith(messenger);
+    OneSignalInAppMessagingController.registerWith(messenger);
+    OneSignalOutcomeEventsController.registerWith(messenger);
+  }
+
+  @Override
+  public void onAttachedToEngine(@NonNull FlutterPlugin.FlutterPluginBinding flutterPluginBinding) {
+    init(
+        flutterPluginBinding.getApplicationContext(),
+        flutterPluginBinding.getBinaryMessenger()
+    );
+  }
+
+  @Override
+  public void onDetachedFromEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
+    onDetachedFromEngine(binding.getApplicationContext());
+  }
+
+  private void onDetachedFromEngine(Context applicationContext) {
+    OneSignal.removeNotificationReceivedHandler();
+    OneSignal.removeNotificationOpenedHandler();
+    OneSignal.removeInAppMessageClickHandler();
+  }
+
+  // This static method is only to remain compatible with apps that don’t use the v2 Android embedding.
+  @Deprecated()
+  @SuppressLint("Registrar")
+  public static void registerWith(final Registrar registrar) {
+    final OneSignalPlugin plugin = new OneSignalPlugin();
+    plugin.init(registrar.context(), registrar.messenger());
 
     // Create a callback for the flutterRegistrar to connect the applications onDestroy
-    plugin.flutterRegistrar.addViewDestroyListener(new PluginRegistry.ViewDestroyListener() {
+    registrar.addViewDestroyListener(new PluginRegistry.ViewDestroyListener() {
       @Override
       public boolean onViewDestroy(FlutterNativeView flutterNativeView) {
         // Remove all handlers so they aren't triggered with wrong context
-        OneSignal.removeNotificationReceivedHandler();
-        OneSignal.removeNotificationOpenedHandler();
-        OneSignal.removeInAppMessageClickHandler();
+        plugin.onDetachedFromEngine(registrar.context());
         return false;
       }
     });
-
-    OneSignalTagsController.registerWith(registrar);
-    OneSignalInAppMessagingController.registerWith(registrar);
-    OneSignalOutcomeEventsController.registerWith(registrar);
   }
 
   @Override
@@ -134,7 +170,6 @@ public class OneSignalPlugin
   private void initOneSignal(MethodCall call, Result reply) {
     String appId = call.argument("appId");
     String baseUrl = call.argument("baseUrl");
-    Context context = flutterRegistrar.activeContext();
 
     OneSignal.Builder builder = OneSignal.getCurrentOrNewInitBuilder();
     builder.unsubscribeWhenNotificationsAreDisabled(true);

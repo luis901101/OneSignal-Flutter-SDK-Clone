@@ -15,8 +15,8 @@ class OneSignalMockChannelController {
   late OneSignalState state;
 
   OneSignalMockChannelController() {
-    this._channel.setMockMethodCallHandler(_handleMethod);
-    this._tagsChannel.setMockMethodCallHandler(_handleMethod);
+    // this._channel.setMockMethodCallHandler(_handleMethod);
+    // this._tagsChannel.setMockMethodCallHandler(_handleMethod);
   }
 
   void resetState() {
