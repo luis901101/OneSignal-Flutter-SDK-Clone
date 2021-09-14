@@ -16,9 +16,9 @@ public class OneSignalInAppMessagingController extends FlutterRegistrarResponder
 
     static void registerWith(BinaryMessenger messenger) {
         OneSignalInAppMessagingController controller = new OneSignalInAppMessagingController();
+        controller.messenger = messenger;
         controller.channel = new MethodChannel(messenger, "OneSignal#inAppMessages");
         controller.channel.setMethodCallHandler(controller);
-        controller.messenger = messenger;
     }
 
     @Override
