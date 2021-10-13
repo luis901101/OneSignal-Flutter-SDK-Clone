@@ -4,7 +4,7 @@ version '2.6.1'
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -15,7 +15,7 @@ buildscript {
 rootProject.allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 
@@ -36,7 +36,7 @@ android {
 dependencies {
 //    api 'com.onesignal:OneSignal:3.15.3'
 //    api 'com.github.luis901101:OneSignal-Android-SDK:3.15.3'
-    api 'com.github.luis901101:OneSignal-Android-SDK:custom-base-url-SNAPSHOT'
+    api 'com.github.luis901101:OneSignal-Android-SDK-Clone:custom-base-url-SNAPSHOT'
     api 'com.google.firebase:firebase-iid' // This dependency here is to fix a problem with Firebase Cloud Message library used by android for push notifications... for more info check this (https://stackoverflow.com/questions/68320549/flutter-java-lang-noclassdeffounderror-failed-resolution-of-lcom-google-fireb)
 }
 
